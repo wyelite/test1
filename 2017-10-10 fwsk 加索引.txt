@@ -1,0 +1,20 @@
+王工，防伪税控数据库cb_fpcgl_mx表的dk_nsrsbh字段麻烦加个索引，谢～
+
+
+我只是想确认一下，建了索引，这个语句是不是能快？
+许澄荣 10:13:51
+  CURSOR C1 IS
+    select count(decode(ZFBZ, 'N', 1, NULL)) as ZC_FS,
+           sum(decode(ZFBZ, 'N', JE, NULL)) as CBJE,
+           sum(decode(ZFBZ, 'N', SE, NULL)) as CBSE
+      from htjs.cb_fpcgl_mx
+     where (BS_NSRSBH = avc_nsrsbh or BS_NSRSBH = v_old_nsrsbh or DK_NSRSBH = avc_nsrsbh or DK_NSRSBH = v_old_nsrsbh)
+       and BSYF >= sssq_q_format
+       and BSYF <= sssq_z_format
+       and nvl(tspzbz, 'xx') != '02'
+       and (je >= 0 or (je < 0 and fpqm_status = 0) or
+           (je < 0 and fpqm_status is null));
+数据库、中间件 10:14:30
+按理说，用了or条件，建索引也没效果吧？
+
+htjs
